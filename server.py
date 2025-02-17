@@ -12,6 +12,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         msg = 'Hello! you requested %s' % (self.path)
         self.wfile.write(msg.encode())
 
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        post_data = self.rfile.read(content_length)
+        
+        self.send_response(HTTPStatus.OK)
+        self.send_header('Content-Type', 'application/octet-stream')
+        self.end_headers()
+        
+        self.wfile.write(post_data)
+
 
 port = int(os.getenv('PORT', 80))
 print('Listening on port %s' % (port))
